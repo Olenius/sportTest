@@ -20,7 +20,7 @@ services:
     networks:
       - app-network
 
-  #Nginx Service
+      #Nginx Service
   webserver:
     image: nginx:alpine
     container_name: webserver
@@ -29,6 +29,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      - "5173:5173"
     volumes:
       - ./:/var/www
       - ./nginx/conf.d/:/etc/nginx/conf.d/
