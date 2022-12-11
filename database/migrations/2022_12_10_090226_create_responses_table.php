@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->integer('vacancyId');
             $table->integer('userId');
+            $table->string('message');
             $table->timestamps();
 
         });

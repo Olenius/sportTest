@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('userId');
             $table->integer('entityId');
             $table->integer('entityType');
+            $table->unique(['userId', 'entityId', 'entityType']);
             $table->timestamps();
         });
     }

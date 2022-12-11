@@ -17,7 +17,8 @@ return new class extends Migration
             $table->id();
             $table->integer('userId');
             $table->string('title');
-            $table->integer('description');
+            $table->string('description');
+            $table->integer('is_deleted')->default(\App\Models\JobVacancy::IS_DELETED_NO);
             $table->timestamps();
         });
     }

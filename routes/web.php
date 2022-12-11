@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\Dashboard;
+use App\Http\Controllers\Like;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Response;
+use App\Http\Controllers\Vacancy;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -25,9 +29,17 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [Dashboard::class, 'main'])->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::match(['get','post'], '/vacancy/{id?}', [Vacancy::class, 'edit'])->middleware(['auth', 'verified'])->name('vacancy.edit');
+Route::get( '/vacancy/delete/{id?}', [Vacancy::class, 'delete'])->middleware(['auth', 'verified'])->name('vacancy.delete');
+
+Route::post( '/like/user/{id}', [Like::class, 'user'])->middleware(['auth', 'verified'])->name('like.user');
+Route::post( '/like/vacancy/{id}', [Like::class, 'vacancy'])->middleware(['auth', 'verified'])->name('like.vacancy');
+
+Route::get( '/responseAdd/{vacancyId}', [Response::class, 'add'])->middleware(['auth', 'verified'])->name('response.add');
+Route::post('/responseSave', [Response::class, 'save'])->middleware(['auth', 'verified'])->name('response.save');
+Route::get( '/responseList/{vacancyId}', [Response::class, 'list'])->middleware(['auth', 'verified'])->name('response.list');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
