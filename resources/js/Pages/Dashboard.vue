@@ -18,11 +18,10 @@ function likeReq (url, event) {
   axios.post(url, "test").then( res => {
     if(res.data === 'like') {
       let btn = document.getElementById(btnId)
-      btn.classList.add("red");
-      console.log(res.data)
+      btn.classList.add("pink");
     } else {
       let btn = document.getElementById(btnId)
-      btn.classList.remove("red");
+      btn.classList.remove("pink");
     }
   })
 }
@@ -47,14 +46,15 @@ function likeReq (url, event) {
                 <div class="bg-white md:h-48 rounded-lg shadow-md flex flex-wrap flex-col-reverse md:flex-col">
                   <div class="w-full p-4">
                     <h3 class="text-3xl font-bold card-buttons">{{ vacancy.title }}</h3>
+                    <h2 class="text-3xl font-bold card-buttons">by {{ vacancy.userName }}</h2>
                     <p>{{ vacancy.description }}</p>
                     <div class="mt-2">
                       <div v-if="vacancy.userId != user.id">
-                        <SecondaryButton :id="'likeVac' + vacancy.id" class="card-buttons" v-on:click="likeReq(route('like.vacancy', { id: vacancy.id }), $event)">
+                        <SecondaryButton :id="'likeVac' + vacancy.id" v-bind:class="[vacancy.likeVacancy ? 'pink' : '', 'card-buttons']" v-on:click="likeReq(route('like.vacancy', { id: vacancy.id }), $event)">
                             Like Vacancy
                         </SecondaryButton>
-                        <SecondaryButton :id="'likeUsr' + vacancy.id" class="card-buttons" v-on:click="likeReq(route('like.user', { id: vacancy.userId }), $event)">
-                            Like User {{ vacancy.userId }}
+                        <SecondaryButton :id="'likeUsr' + vacancy.id" v-bind:class="[vacancy.likeUser ? 'pink' : '', 'card-buttons']" v-on:click="likeReq(route('like.user', { id: vacancy.userId }), $event)">
+                            Like User {{ vacancy.userName }}
                         </SecondaryButton>
                         <SecondaryButton class="card-buttons">
                           <Link

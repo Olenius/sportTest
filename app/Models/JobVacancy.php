@@ -34,11 +34,43 @@ class JobVacancy extends Model
     }
 
     public function getForDashboard() : array {
-        return $this->query()
+        $userId = Auth::id();
+
+        $vacancies = $this->query()
                             ->where(self::FIELD_IS_DELETED, self::IS_DELETED_NO)
                             ->limit(50)
                             ->orderByDesc(self::getUpdatedAtColumn())
-                            ->get()->toArray();
+                            ->get();
+
+        $vacanciesLikes = Like::query()
+            ->where('entityType', Like::ENTITY_TYPE_VACANCY)
+            ->whereIn('entityId', $vacancies->pluck('id')->toArray())
+            ->where('userId', $userId)
+            ->get();
+
+        $usersLikes = Like::query()
+            ->where('entityType', Like::ENTITY_TYPE_USER)
+            ->whereIn('entityId', $vacancies->pluck('userId')->toArray())
+            ->where('userId', $userId)->get();
+
+        $vacanciesUsers = User::query()
+            ->whereIn('id', $vacancies->pluck('userId')->toArray())
+            ->get(['id', 'name']);
+
+        $result = [];
+        foreach ($vacancies as $vacancy) {
+            $result[$vacancy->id] = [
+                'id' => $vacancy->id,
+                'userId' => $vacancy->userId,
+                'title' => $vacancy->title,
+                'description' => $vacancy->description,
+                'userName' => $vacanciesUsers->find($vacancy->userId)->name,
+                'likeUser' => (bool)$usersLikes->where('entityId', $vacancy->userId)->first(),
+                'likeVacancy' => (bool)$vacanciesLikes->where('entityId', $vacancy->id)->first(),
+            ];
+        }
+
+        return $result;
     }
 
     public function edit($data) {
